@@ -55,6 +55,34 @@ function setupNavigation() {
         });
     });
 
+    // CORRECTIF COMMANDE : Gestion de l'ouverture et fermeture de la Sidebar
+    const toggleSidebarBtn = document.getElementById("toggle-sidebar-btn");
+    const sidebar = document.querySelector(".sidebar");
+    const toggleIcon = document.getElementById("toggle-icon");
+
+    if (toggleSidebarBtn && sidebar) {
+        toggleSidebarBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            sidebar.classList.toggle("collapsed");
+
+            // Met à jour l'icône de la flèche selon l'état actuel
+            if (sidebar.classList.contains("collapsed")) {
+                if (toggleIcon) toggleIcon.className = "fa-solid fa-chevron-right";
+                toggleSidebarBtn.setAttribute("title", "Ouvrir le menu");
+            } else {
+                if (toggleIcon) toggleIcon.className = "fa-solid fa-chevron-left";
+                toggleSidebarBtn.setAttribute("title", "Réduire le menu");
+            }
+
+            // Force le redimensionnement instantané de ton graphique pour occuper l'espace libéré
+            if (capitalChartInstance !== null) {
+                setTimeout(() => {
+                    capitalChartInstance.resize();
+                }, 220); // Laisse le temps à la barre de finir l'animation CSS
+            }
+        });
+    }
+
     const themeBtn = document.getElementById("toggle-theme-btn");
     if (themeBtn) {
         themeBtn.addEventListener("click", () => {
