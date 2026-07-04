@@ -1,0 +1,401 @@
+:root {
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --accent-color: #38bdf8;
+    --success: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --border: #334155;
+}
+
+.light-theme {
+    --bg-primary: #f8fafc;
+    --bg-secondary: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --accent-color: #0284c7;
+    --success: #16a34a;
+    --danger: #dc2626;
+    --warning: #d97706;
+    --border: #e2e8f0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-main);
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.app-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 240px;
+    background-color: var(--bg-secondary);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    flex-shrink: 0;
+}
+
+.logo {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--accent-color);
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+nav {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex-grow: 1;
+}
+
+.nav-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 10px 12px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.nav-link:hover, .nav-link.active {
+    background-color: var(--border);
+    color: var(--text-main);
+}
+
+.theme-toggle button {
+    width: 100%;
+    padding: 8px;
+    background: var(--border);
+    color: var(--text-main);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 25px;
+    overflow-y: auto;
+}
+
+.content-section {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.stat-card {
+    background-color: var(--bg-secondary);
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-card.highlight {
+    border-color: var(--accent-color);
+}
+
+.stat-title {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.stat-value {
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+.stat-status {
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-top: 4px;
+}
+.stat-status.red { color: var(--danger); }
+.stat-status.green { color: var(--success); }
+
+.charts-container {
+    margin-top: 25px;
+    width: 100%;
+    background: var(--bg-secondary);
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+}
+
+.chart-wrapper {
+    position: relative;
+    width: 100%;
+    height: 250px;
+}
+
+.analysis-box {
+    background: var(--bg-secondary); 
+    padding: 15px; 
+    border-radius: 10px; 
+    margin-top: 25px; 
+    border: 1px solid var(--border);
+}
+.analysis-grid {
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+    gap: 12px; 
+    margin-top: 12px;
+    font-size: 0.9rem;
+}
+
+.table-container {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 25px;
+}
+
+.table-header-tools {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.filters-wrapper {
+    display: flex;
+    gap: 8px;
+}
+
+input, select {
+    background-color: var(--bg-primary);
+    color: var(--text-main);
+    border: 1px solid var(--border);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+}
+
+select optgroup {
+    background: var(--bg-primary);
+    color: var(--accent-color);
+    font-weight: bold;
+    font-style: normal;
+}
+
+select option {
+    color: var(--text-main);
+    background: var(--bg-secondary);
+}
+
+.responsive-table {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+th, td {
+    padding: 10px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+}
+
+th {
+    color: var(--text-muted);
+}
+
+.compact-form {
+    max-width: 750px;
+    background-color: var(--bg-secondary);
+    padding: 18px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    margin-top: 15px;
+}
+
+.form-two-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.form-group label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.form-group input, .form-group select {
+    padding: 7px 10px;
+    font-size: 0.85rem;
+    width: 100%;
+}
+
+.form-actions {
+    margin-top: 15px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.btn-submit {
+    background-color: var(--accent-color);
+    color: #0f172a;
+    font-weight: bold;
+    border: none;
+    padding: 9px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background 0.2s;
+}
+
+.btn-submit:hover {
+    background-color: #7dd3fc;
+}
+
+.alert-zone { margin-bottom: 15px; }
+.alert-card.success {
+    background-color: rgba(16, 185, 129, 0.15);
+    border: 1px solid var(--success);
+    padding: 12px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.9rem;
+}
+
+.strategies-dynamic-grid {
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); 
+    gap: 15px;
+}
+
+.strat-analysis-card {
+    background-color: var(--bg-secondary);
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    font-size: 0.85rem;
+}
+
+.best-strategy-banner {
+    background: var(--bg-secondary); 
+    padding: 12px; 
+    border-radius: 6px; 
+    margin: 15px 0; 
+    border-left: 4px solid var(--accent-color);
+    font-size: 0.9rem;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin-top: 15px;
+}
+.calendar-day {
+    background-color: var(--bg-secondary);
+    aspect-ratio: 1;
+    border-radius: 6px;
+    padding: 8px;
+    border: 1px solid var(--border);
+    font-size: 0.8rem;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* AJUSTEMENTS RESPONSIVE MOBILE ET CORRECTIFS */
+@media (max-width: 768px) {
+    .app-container { 
+        flex-direction: column; 
+    }
+    .sidebar { 
+        width: 100%; 
+        padding: 12px; 
+    }
+    .main-content { 
+        padding: 15px; 
+    }
+    .form-two-columns { 
+        grid-template-columns: 1fr; 
+        gap: 10px; 
+    }
+    .stats-grid { 
+        grid-template-columns: repeat(2, 1fr) !important; 
+        gap: 10px; 
+    }
+    
+    /* Correction de l'alignement des filtres sur téléphone (image_af0b03.png) */
+    .table-header-tools {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .filters-wrapper {
+        display: grid;
+        grid-template-columns: 1fr; /* Aligne les filtres les uns sous les autres sur petit écran */
+        width: 100%;
+        gap: 8px;
+    }
+    .filters-wrapper input, .filters-wrapper select {
+        width: 100%; /* Prend toute la largeur de l'écran du téléphone */
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+}
+
+/* Forcer le calendrier natif à afficher correctement l'heure en mode sombre */
+input[type="datetime-local"]::-calendar-picker-indicator {
+    cursor: pointer;
+    filter: invert(1); /* Rend l'icône du calendrier visible sur fond sombre */
+}

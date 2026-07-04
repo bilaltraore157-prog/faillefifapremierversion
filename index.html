@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIFA 25 - Tracker de Stratégies</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js pour l'évolution du capital -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="dark-theme">
+    <div class="app-container">
+        <!-- Barre latérale de navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fa-solid fa-chart-line"></i> <span>FIFA Track 25</span>
+            </div>
+            <nav>
+                <a href="#dashboard" class="nav-link active"><i class="fa-solid fa-wallet"></i> Dashboard</a>
+                <a href="#add-bet" class="nav-link"><i class="fa-solid fa-plus-circle"></i> Ajouter un Pari</a>
+                <a href="#strategies" class="nav-link"><i class="fa-solid fa-chess-knight"></i> Stratégies</a>
+                <a href="#calendar-section" class="nav-link"><i class="fa-solid fa-calendar-days"></i> Calendrier</a>
+            </nav>
+            <div class="theme-toggle">
+                <button id="toggle-theme-btn"><i class="fa-solid fa-moon"></i> Mode</button>
+            </div>
+        </aside>
+
+        <!-- Contenu Principal -->
+        <main class="main-content">
+            <!-- Zone d'alerte Objectif atteint -->
+            <div id="alert-zone" class="alert-zone hidden">
+                <div class="alert-card success">
+                    <i class="fa-solid fa-trophy"></i>
+                    <div>
+                        <h4>🎉 OBJECTIF ATTEINT !</h4>
+                        <p>Objectif de 10 000 FCFA validé. Il est conseillé d’arrêter les paris pour aujourd’hui.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION : Dashboard -->
+            <section id="dashboard" class="content-section">
+                <div class="section-header">
+                    <h2>Tableau de Bord Principal</h2>
+                    <span class="currency-badge">Devise : FCFA</span>
+                </div>
+
+                <!-- Grille des Statistiques Principales -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-title">Capital Initial</span>
+                        <span class="stat-value" id="stat-cap-init">30 000</span>
+                    </div>
+                    <div class="stat-card highlight">
+                        <span class="stat-title">Capital Actuel</span>
+                        <span class="stat-value" id="stat-cap-actuel">30 000</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-title">Profit / Perte Total</span>
+                        <span class="stat-value" id="stat-profit-total">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-title">ROI (%)</span>
+                        <span class="stat-value" id="stat-roi">0%</span>
+                    </div>
+                    <div class="stat-card day-obj">
+                        <span class="stat-title">Résultat du Jour</span>
+                        <span class="stat-value" id="stat-day-result">0 / 10 000</span>
+                        <span class="stat-status red" id="day-status">Non atteint</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-title">Winrate</span>
+                        <span class="stat-value" id="stat-winrate">0%</span>
+                        <span class="stat-sub" id="stat-bets-count">0 Paris</span>
+                    </div>
+                </div>
+
+                <!-- Section Graphique -->
+                <div class="charts-container">
+                    <h3>Évolution du Capital (30 Jours)</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="capitalChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Analyse Intelligente -->
+                <div class="analysis-box">
+                    <h3><i class="fa-solid fa-brain"></i> Analyse Intelligente & Insights</h3>
+                    <div class="analysis-grid">
+                        <div>Meilleur Championnat : <strong id="best-league">-</strong></div>
+                        <div>Pire Championnat : <strong id="worst-league">-</strong></div>
+                        <div>Moyenne Paris / Jour : <strong id="avg-bets">-</strong></div>
+                    </div>
+                </div>
+
+                <!-- Historique et Filtres -->
+                <div class="table-container">
+                    <div class="table-header-tools">
+                        <h3>Historique des Paris</h3>
+                        <div class="filters-wrapper">
+                            <input type="text" id="search-input" placeholder="Recherche rapide...">
+                            <select id="filter-strategy">
+                                <option value="">Toutes les Options</option>
+                                <option value="Victoire">Victoire</option>
+                                <option value="Les 2 équipes marquent : Oui">Les 2 marquent : Oui</option>
+                                <option value="Les 2 équipes marquent : Non">Les 2 marquent : Non</option>
+                            </select>
+                            <select id="filter-status">
+                                <option value="">Tous les Statuts</option>
+                                <option value="Gagné">Gagnés</option>
+                                <option value="Perdu">Perdus</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="responsive-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date/Heure</th>
+                                    <th>Championnat</th>
+                                    <th>Match</th>
+                                    <th>Option Choisie</th>
+                                    <th>Cote</th>
+                                    <th>Mise</th>
+                                    <th>P/L</th>
+                                    <th>Statut</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bets-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION : Ajouter un Pari -->
+            <section id="add-bet" class="content-section hidden">
+                <h2>Enregistrer un Nouveau Pari Virtual FIFA</h2>
+                <form id="bet-form" class="modern-form compact-form">
+                    <div class="form-two-columns">
+                        <div class="form-group">
+                            <label>Date et Heure</label>
+                            <input type="datetime-local" id="bet-datetime" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Championnat</label>
+                            <select id="bet-league" required>
+                                <option value="" disabled selected>Choisir un championnat</option>
+                                <option value="FC 26. Spain Championship">FC 26. Spain Championship</option>
+                                <option value="FC 25. Italy Championship">FC 25. Italy Championship</option>
+                                <option value="FC 25. Championnat d'Allemagne">FC 25. Championnat d'Allemagne</option>
+                                <option value="FC 25. England Championship">FC 25. England Championship</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Équipe Domicile</label>
+                            <input type="text" id="bet-home" placeholder="Ex: Valencia" list="teams-list" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Équipe Extérieur</label>
+                            <input type="text" id="bet-away" placeholder="Ex: Real Oviedo" list="teams-list" required>
+                        </div>
+                        
+                        <!-- LISTE UNIQUE ET COMPLÈTE ICI -->
+                        <div class="form-group">
+                            <label>Stratégie (Méthode)</label>
+                            <select id="bet-strategy" required>
+                                <option value="" disabled selected>Choisir la méthode exacte</option>
+                                <optgroup label="Général">
+                                    <option value="Victoire">Victoire</option>
+                                    <option value="Les 2 équipes marquent : Oui">Les 2 équipes marquent : Oui</option>
+                                    <option value="Les 2 équipes marquent : Non">Les 2 équipes marquent : Non</option>
+                                </optgroup>
+                                <optgroup label="Total Match (Plus de)">
+                                    <option value="Total +1.5">Total +1.5</option>
+                                    <option value="Total +2.5">Total +2.5</option>
+                                    <option value="Total +3.5">Total +3.5</option>
+                                    <option value="Total +4.5">Total +4.5</option>
+                                    <option value="Total +5.5">Total +5.5</option>
+                                </optgroup>
+                                <optgroup label="Total Match (Moins de)">
+                                    <option value="Total -1.5">Total -1.5</option>
+                                    <option value="Total -2.5">Total -2.5</option>
+                                    <option value="Total -3.5">Total -3.5</option>
+                                    <option value="Total -4.5">Total -4.5</option>
+                                    <option value="Total -5.5">Total -5.5</option>
+                                </optgroup>
+                                <optgroup label="Total Équipe A (Domicile)">
+                                    <option value="Total Équipe A +0.5">Total Équipe A +0.5</option>
+                                    <option value="Total Équipe A +1.5">Total Équipe A +1.5</option>
+                                    <option value="Total Équipe A +2.5">Total Équipe A +2.5</option>
+                                    <option value="Total Équipe A +3.5">Total Équipe A +3.5</option>
+                                    <option value="Total Équipe A -0.5">Total Équipe A -0.5</option>
+                                    <option value="Total Équipe A -1.5">Total Équipe A -1.5</option>
+                                    <option value="Total Équipe A -2.5">Total Équipe A -2.5</option>
+                                    <option value="Total Équipe A -3.5">Total Équipe A -3.5</option>
+                                </optgroup>
+                                <optgroup label="Total Équipe B (Extérieur)">
+                                    <option value="Total Équipe B +0.5">Total Équipe B +0.5</option>
+                                    <option value="Total Équipe B +1.5">Total Équipe B +1.5</option>
+                                    <option value="Total Équipe B +2.5">Total Équipe B +2.5</option>
+                                    <option value="Total Équipe B +3.5">Total Équipe B +3.5</option>
+                                    <option value="Total Équipe B -0.5">Total Équipe B -0.5</option>
+                                    <option value="Total Équipe B -1.5">Total Équipe B -1.5</option>
+                                    <option value="Total Équipe B -2.5">Total Équipe B -2.5</option>
+                                    <option value="Total Équipe B -3.5">Total Équipe B -3.5</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Cote</label>
+                            <input type="number" id="bet-odds" step="0.01" min="1.01" placeholder="1.85" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Mise (FCFA)</label>
+                            <input type="number" id="bet-stake" min="1" placeholder="1000" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Résultat</label>
+                            <select id="bet-outcome" required>
+                                <option value="Gagné">Gagné</option>
+                                <option value="Perdu">Perdu</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-submit"><i class="fa-solid fa-save"></i> Enregistrer le pari</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- SECTION : Stratégies -->
+            <section id="strategies" class="content-section hidden">
+                <h2>Comparaison des Stratégies</h2>
+                <div class="best-strategy-banner">
+                    La meilleure méthode actuellement est : <strong id="best-strat-name">Aucune donnée</strong>
+                </div>
+                <div class="strategies-dynamic-grid" id="strategies-container-grid"></div>
+            </section>
+
+            <!-- SECTION : Calendrier -->
+            <section id="calendar-section" class="content-section hidden">
+                <h2>Calendrier de Suivi - 30 Jours</h2>
+                <div class="calendar-grid" id="calendar-grid"></div>
+            </section>
+        </main>
+    </div>
+
+    <!-- DATALIST -->
+    <datalist id="teams-list">
+        <option value="Leipzig"><option value="Borussia Dortmund"><option value="Bayer 04 Leverkusen"><option value="Bayern Munich">
+        <option value="Tottenham Hotspur"><option value="Arsenal"><option value="Manchester City"><option value="Chelsea"><option value="Liverpool">
+        <option value="Milano"><option value="Lombardia"><option value="Latium"><option value="Napoli"><option value="Roma"><option value="Juventus">
+        <option value="Barcelone"><option value="Real Madrid"><option value="Villarreal"><option value="Valencia"><option value="Real Oviedo">
+    </datalist>
+
+    <script src="script.js"></script>
+</body>
+</html>
