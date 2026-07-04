@@ -5,32 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FIFA 25 - Tracker de Stratégies</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Chart.js pour l'évolution du capital -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- FontAwesome pour les icônes -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="dark-theme">
     <div class="app-container">
-        <!-- Barre latérale de navigation -->
         <aside class="sidebar">
             <div class="logo">
-                <i class="fa-solid fa-chart-line"></i> <span>FIFA Track 25</span>
+                <div class="logo-title">
+                    <i class="fa-solid fa-chart-line"></i> <span>FIFA Track 25</span>
+                </div>
+                <button id="toggle-sidebar-btn" type="button" title="Réduire le menu" style="background: none; border: none; color: inherit; cursor: pointer; padding: 5px;">
+                    <i class="fa-solid fa-chevron-left" id="toggle-icon"></i>
+                </button>
             </div>
             <nav>
-                <a href="#dashboard" class="nav-link active"><i class="fa-solid fa-wallet"></i> Dashboard</a>
-                <a href="#add-bet" class="nav-link"><i class="fa-solid fa-plus-circle"></i> Ajouter un Pari</a>
-                <a href="#strategies" class="nav-link"><i class="fa-solid fa-chess-knight"></i> Stratégies</a>
-                <a href="#calendar-section" class="nav-link"><i class="fa-solid fa-calendar-days"></i> Calendrier</a>
+                <a href="#dashboard" class="nav-link active"><i class="fa-solid fa-wallet"></i> <span>Dashboard</span></a>
+                <a href="#add-bet" class="nav-link"><i class="fa-solid fa-plus-circle"></i> <span>Ajouter un Pari</span></a>
+                <a href="#strategies" class="nav-link"><i class="fa-solid fa-chess-knight"></i> <span>Stratégies</span></a>
+                <a href="#calendar-section" class="nav-link"><i class="fa-solid fa-calendar-days"></i> <span>Calendrier</span></a>
             </nav>
             <div class="theme-toggle">
-                <button id="toggle-theme-btn"><i class="fa-solid fa-moon"></i> Mode</button>
+                <button id="toggle-theme-btn"><i class="fa-solid fa-moon"></i> <span>Mode</span></button>
             </div>
         </aside>
 
-        <!-- Contenu Principal -->
         <main class="main-content">
-            <!-- Zone d'alerte Objectif atteint -->
             <div id="alert-zone" class="alert-zone hidden">
                 <div class="alert-card success">
                     <i class="fa-solid fa-trophy"></i>
@@ -41,14 +41,12 @@
                 </div>
             </div>
 
-            <!-- SECTION : Dashboard -->
             <section id="dashboard" class="content-section">
                 <div class="section-header">
                     <h2>Tableau de Bord Principal</h2>
                     <span class="currency-badge">Devise : FCFA</span>
                 </div>
 
-                <!-- Grille des Statistiques Principales -->
                 <div class="stats-grid">
                     <div class="stat-card">
                         <span class="stat-title">Capital Initial</span>
@@ -78,7 +76,6 @@
                     </div>
                 </div>
 
-                <!-- Section Graphique -->
                 <div class="charts-container">
                     <h3>Évolution du Capital (30 Jours)</h3>
                     <div class="chart-wrapper">
@@ -86,7 +83,6 @@
                     </div>
                 </div>
 
-                <!-- Analyse Intelligente -->
                 <div class="analysis-box">
                     <h3><i class="fa-solid fa-brain"></i> Analyse Intelligente & Insights</h3>
                     <div class="analysis-grid">
@@ -96,7 +92,6 @@
                     </div>
                 </div>
 
-                <!-- Historique et Filtres -->
                 <div class="table-container">
                     <div class="table-header-tools">
                         <h3>Historique des Paris</h3>
@@ -136,7 +131,6 @@
                 </div>
             </section>
 
-            <!-- SECTION : Ajouter un Pari -->
             <section id="add-bet" class="content-section hidden">
                 <h2>Enregistrer un Nouveau Pari Virtual FIFA</h2>
                 <form id="bet-form" class="modern-form compact-form">
@@ -164,7 +158,6 @@
                             <input type="text" id="bet-away" placeholder="Ex: Real Oviedo" list="teams-list" required>
                         </div>
                         
-                        <!-- LISTE UNIQUE ET COMPLÈTE ICI -->
                         <div class="form-group">
                             <label>Stratégie (Méthode)</label>
                             <select id="bet-strategy" required>
@@ -233,7 +226,6 @@
                 </form>
             </section>
 
-            <!-- SECTION : Stratégies -->
             <section id="strategies" class="content-section hidden">
                 <h2>Comparaison des Stratégies</h2>
                 <div class="best-strategy-banner">
@@ -242,7 +234,6 @@
                 <div class="strategies-dynamic-grid" id="strategies-container-grid"></div>
             </section>
 
-            <!-- SECTION : Calendrier -->
             <section id="calendar-section" class="content-section hidden">
                 <h2>Calendrier de Suivi - 30 Jours</h2>
                 <div class="calendar-grid" id="calendar-grid"></div>
@@ -250,7 +241,6 @@
         </main>
     </div>
 
-    <!-- DATALIST -->
     <datalist id="teams-list">
         <option value="Leipzig"><option value="Borussia Dortmund"><option value="Bayer 04 Leverkusen"><option value="Bayern Munich">
         <option value="Tottenham Hotspur"><option value="Arsenal"><option value="Manchester City"><option value="Chelsea"><option value="Liverpool">
