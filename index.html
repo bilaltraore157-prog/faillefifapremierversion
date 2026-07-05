@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -100,6 +99,9 @@
                             <input type="text" id="search-input" placeholder="Recherche rapide...">
                             <select id="filter-strategy">
                                 <option value="">Toutes les Options</option>
+                                <option value="Victoire">Victoire</option>
+                                <option value="Les 2 équipes marquent : Oui">Les 2 marquent : Oui</option>
+                                <option value="Les 2 équipes marquent : Non">Les 2 marquent : Non</option>
                             </select>
                             <select id="filter-status">
                                 <option value="">Tous les Statuts</option>
@@ -149,30 +151,56 @@
                         </div>
                         <div class="form-group">
                             <label>Équipe Domicile</label>
-                            <input type="text" id="bet-home" placeholder="Ex: Valencia" list="teams-list" required autocomplete="off">
+                            <input type="text" id="bet-home" placeholder="Ex: Valencia" list="teams-list" required>
                         </div>
                         <div class="form-group">
                             <label>Équipe Extérieur</label>
-                            <input type="text" id="bet-away" placeholder="Ex: Real Oviedo" list="teams-list" required autocomplete="off">
+                            <input type="text" id="bet-away" placeholder="Ex: Real Oviedo" list="teams-list" required>
                         </div>
                         
                         <div class="form-group">
                             <label>Stratégie (Méthode)</label>
                             <select id="bet-strategy" required>
-                                <option value="" disabled selected>Choisir la méthode</option>
-                                <option value="Victoire">Victoire</option>
-                                <option value="Total Plus de">Total Plus de</option>
-                                <option value="Total Moins de">Total Moins de</option>
-                                <option value="Les 2 équipes marquent : Oui">Les 2 équipes marquent : Oui</option>
-                                <option value="Les 2 équipes marquent : Non">Les 2 équipes marquent : Non</option>
-                                <option value="Total Individuel">Total Individuel</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Sélection exacte</label>
-                            <select id="bet-exact" required>
-                                <option value="" disabled selected>Sélectionnez d'abord la méthode</option>
+                                <option value="" disabled selected>Choisir la méthode exacte</option>
+                                <optgroup label="Général">
+                                    <option value="Victoire">Victoire</option>
+                                    <option value="Les 2 équipes marquent : Oui">Les 2 équipes marquent : Oui</option>
+                                    <option value="Les 2 équipes marquent : Non">Les 2 équipes marquent : Non</option>
+                                </optgroup>
+                                <optgroup label="Total Match (Plus de)">
+                                    <option value="Total +1.5">Total +1.5</option>
+                                    <option value="Total +2.5">Total +2.5</option>
+                                    <option value="Total +3.5">Total +3.5</option>
+                                    <option value="Total +4.5">Total +4.5</option>
+                                    <option value="Total +5.5">Total +5.5</option>
+                                </optgroup>
+                                <optgroup label="Total Match (Moins de)">
+                                    <option value="Total -1.5">Total -1.5</option>
+                                    <option value="Total -2.5">Total -2.5</option>
+                                    <option value="Total -3.5">Total -3.5</option>
+                                    <option value="Total -4.5">Total -4.5</option>
+                                    <option value="Total -5.5">Total -5.5</option>
+                                </optgroup>
+                                <optgroup label="Total Équipe A (Domicile)">
+                                    <option value="Total Équipe A +0.5">Total Équipe A +0.5</option>
+                                    <option value="Total Équipe A +1.5">Total Équipe A +1.5</option>
+                                    <option value="Total Équipe A +2.5">Total Équipe A +2.5</option>
+                                    <option value="Total Équipe A +3.5">Total Équipe A +3.5</option>
+                                    <option value="Total Équipe A -0.5">Total Équipe A -0.5</option>
+                                    <option value="Total Équipe A -1.5">Total Équipe A -1.5</option>
+                                    <option value="Total Équipe A -2.5">Total Équipe A -2.5</option>
+                                    <option value="Total Équipe A -3.5">Total Équipe A -3.5</option>
+                                </optgroup>
+                                <optgroup label="Total Équipe B (Extérieur)">
+                                    <option value="Total Équipe B +0.5">Total Équipe B +0.5</option>
+                                    <option value="Total Équipe B +1.5">Total Équipe B +1.5</option>
+                                    <option value="Total Équipe B +2.5">Total Équipe B +2.5</option>
+                                    <option value="Total Équipe B +3.5">Total Équipe B +3.5</option>
+                                    <option value="Total Équipe B -0.5">Total Équipe B -0.5</option>
+                                    <option value="Total Équipe B -1.5">Total Équipe B -1.5</option>
+                                    <option value="Total Équipe B -2.5">Total Équipe B -2.5</option>
+                                    <option value="Total Équipe B -3.5">Total Équipe B -3.5</option>
+                                </optgroup>
                             </select>
                         </div>
                         
