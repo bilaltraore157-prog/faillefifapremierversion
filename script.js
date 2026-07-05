@@ -7,7 +7,6 @@ let appState = {
 
 let capitalChartInstance = null;
 
-// Liste complète de tes options pour le tracking analytique des performances
 const AVAILABLE_STRATEGIES = [
     "Victoire", "Les 2 équipes marquent : Oui", "Les 2 équipes marquent : Non",
     "Total +1.5", "Total +2.5", "Total +3.5", "Total +4.5", "Total +5.5",
@@ -22,10 +21,11 @@ const AVAILABLE_STRATEGIES = [
 document.addEventListener("DOMContentLoaded", () => {
     setupNavigation();
     setupFormAndFilters();
+    setupTableToggle();
     renderApp();
 });
 
-// ====== GESTION DE LA NAVIGATION & PRÉ-REMPLISSAGE DE L'HEURE ======
+// ====== GESTION DE LA NAVIGATION & PRÉ-REMPLISSAGE ======
 function setupNavigation() {
     const links = document.querySelectorAll(".nav-link");
     links.forEach(link => {
@@ -41,7 +41,6 @@ function setupNavigation() {
             if (targetSection) {
                 targetSection.classList.remove("hidden");
                 
-                // CORRECTIF HEURE : Remplit automatiquement la date et l'heure locale actuelle
                 if (targetId === "#add-bet") {
                     const datetimeInput = document.getElementById("bet-datetime");
                     if (datetimeInput) {
@@ -55,7 +54,6 @@ function setupNavigation() {
         });
     });
 
-    // CORRECTIF COMMANDE : Gestion de l'ouverture et fermeture de la Sidebar
     const toggleSidebarBtn = document.getElementById("toggle-sidebar-btn");
     const sidebar = document.querySelector(".sidebar");
     const toggleIcon = document.getElementById("toggle-icon");
@@ -65,7 +63,6 @@ function setupNavigation() {
             e.preventDefault();
             sidebar.classList.toggle("collapsed");
 
-            // Met à jour l'icône de la flèche selon l'état actuel
             if (sidebar.classList.contains("collapsed")) {
                 if (toggleIcon) toggleIcon.className = "fa-solid fa-chevron-right";
                 toggleSidebarBtn.setAttribute("title", "Ouvrir le menu");
@@ -74,11 +71,10 @@ function setupNavigation() {
                 toggleSidebarBtn.setAttribute("title", "Réduire le menu");
             }
 
-            // Force le redimensionnement instantané de ton graphique pour occuper l'espace libéré
             if (capitalChartInstance !== null) {
                 setTimeout(() => {
                     capitalChartInstance.resize();
-                }, 220); // Laisse le temps à la barre de finir l'animation CSS
+                }, 220);
             }
         });
     }
@@ -91,13 +87,43 @@ function setupNavigation() {
     }
 }
 
-// ====== LE FORMULAIRE ET FILTRES DE L'HISTORIQUE ======
+// ====== GESTION DU REPLI DE L'HISTORIQUE ======
+function setupTableToggle() {
+    const tableContainer = document.querySelector(".table-container");
+    const tableTitle = tableContainer ? tableContainer.querySelector("h2") : null;
+    
+    if (tableTitle && tableContainer) {
+        tableTitle.innerHTML = `<i class="fa-solid fa-chevron-down toggle-table-icon"></i> ` + tableTitle.innerHTML;
+        tableTitle.addEventListener("click", () => {
+            tableContainer.classList.toggle("collapsed-table");
+        });
+    }
+}
+
+// ====== CONFIGURATION DYNAMIQUE DU FORMULAIRE ======
 function setupFormAndFilters() {
     const form = document.getElementById("bet-form");
     if (form) {
         form.addEventListener("submit", (e) => {
             e.preventDefault();
             addNewBet();
+        });
+    }
+
+    // Gestion dynamique des placeholders pour les combinés
+    const betTypeSelect = document.getElementById("bet-type");
+    const teamsInput = document.getElementById("bet-teams");
+    const teamsLabel = document.getElementById("label-teams");
+
+    if (betTypeSelect && teamsInput) {
+        betTypeSelect.addEventListener("change", () => {
+            if (betTypeSelect.value === "Combiné") {
+                teamsLabel.innerText = "Détails du Combiné (2-3 Matchs)";
+                teamsInput.placeholder = "Ex: Real vs Barça + Arsenal vs Chelsea";
+            } else {
+                teamsLabel.innerText = "Détail du match";
+                teamsInput.placeholder = "Ex: Valencia vs Real Oviedo";
+            }
         });
     }
 
@@ -109,7 +135,6 @@ function setupFormAndFilters() {
     if (filterStrat) filterStrat.addEventListener("change", filterBets);
     if (filterStatus) filterStatus.addEventListener("change", filterBets);
     
-    // Génère dynamiquement les options du filtre de recherche du tableau
     if (filterStrat) {
         filterStrat.innerHTML = '<option value="">Toutes les Options</option>';
         AVAILABLE_STRATEGIES.forEach(strat => {
@@ -130,7 +155,7 @@ function renderApp() {
     }
 }
 
-// ====== OUTILS DE CALCULS DES MÉTRIQUES ======
+// ====== OUTILS DE CALCULS ======
 function calculateMetrics(betsList) {
     let profitTotal = 0;
     let gainsCount = 0;
@@ -155,7 +180,7 @@ function calculateMetrics(betsList) {
     return { profitTotal, currentCapital, roi, winrate, gainsCount, lossesCount };
 }
 
-// ====== MISE À JOUR DU DASHBOARD ======
+// ====== DASHBOARD ======
 function updateDashboard() {
     const metrics = calculateMetrics(appState.bets);
 
@@ -165,7 +190,6 @@ function updateDashboard() {
     document.getElementById("stat-winrate").innerText = metrics.winrate.toFixed(1) + "%";
     document.getElementById("stat-bets-count").innerText = `${appState.bets.length} Paris (${metrics.gainsCount} G / ${metrics.lossesCount} P)`;
 
-    // Gestion de l'objectif journalier (10 000 F)
     const todayStr = new Date().toISOString().split('T')[0];
     const todayBets = appState.bets.filter(b => b.datetime.startsWith(todayStr));
     let todayProfit = 0;
@@ -187,31 +211,40 @@ function updateDashboard() {
         if (alertZone) alertZone.classList.add("hidden");
     }
 
-    // Statistiques intelligentes (Championnats)
     updateAdvancedInsights();
 }
 
-// ====== AJOUTER UN NOUVEAU PARI ======
+// ====== ENREGISTRER UN PARI (SIMPLE OU COMBINÉ) ======
 function addNewBet() {
+    const betType = document.getElementById("bet-type").value;
+    const teamsValue = document.getElementById("bet-teams").value.trim();
+
+    if (!teamsValue) {
+        alert("Veuillez remplir le détail du match ou du combiné.");
+        return;
+    }
+
     const newBet = {
         id: Date.now(),
         datetime: document.getElementById("bet-datetime").value,
         league: document.getElementById("bet-league").value,
-        home: document.getElementById("bet-home").value.trim(),
-        away: document.getElementById("bet-away").value.trim(),
-        strategy: document.getElementById("bet-strategy").value, // Prend directement la méthode exacte
+        type: betType, // Sauvegarde du type : Simple ou Combiné
+        teams: teamsValue, // Toutes les équipes stockées ensemble
+        strategy: document.getElementById("bet-strategy").value,
         odds: parseFloat(document.getElementById("bet-odds").value),
         stake: parseFloat(document.getElementById("bet-stake").value),
         outcome: document.getElementById("bet-outcome").value
     };
 
-    appState.bets.unshift(newBet); // Ajout au début
+    appState.bets.unshift(newBet);
     localStorage.setItem('fifa_track_bets', JSON.stringify(appState.bets));
     
     document.getElementById("bet-form").reset();
-    renderApp();
     
-    // Retour automatique au Dashboard principal après validation
+    // Remet le label par défaut après réinitialisation
+    document.getElementById("label-teams").innerText = "Détail du match";
+    
+    renderApp();
     document.querySelector('.nav-link[href="#dashboard"]').click();
     alert("Pari enregistré avec succès !");
 }
@@ -226,10 +259,15 @@ function renderBetsTable(betsList) {
         const netProfit = bet.outcome === "Gagné" ? (bet.stake * bet.odds) - bet.stake : -bet.stake;
         const tr = document.createElement("tr");
 
+        // Affichage d'un badge distinct si c'est un combiné
+        const typeBadge = bet.type === "Combiné" 
+            ? `<span class="badge-option" style="background-color: #f59e0b; color: #fff; margin-right:5px;">[Comb]</span>` 
+            : '';
+
         tr.innerHTML = `
             <td>${bet.datetime.replace('T', ' ')}</td>
             <td>${bet.league}</td>
-            <td><strong>${bet.home}</strong> vs <strong>${bet.away}</strong></td>
+            <td>${typeBadge}<strong>${bet.teams || (bet.home + ' vs ' + bet.away)}</strong></td>
             <td><span class="badge-option">${bet.strategy}</span></td>
             <td>${bet.odds.toFixed(2)}</td>
             <td>${bet.stake.toLocaleString()}</td>
@@ -256,16 +294,15 @@ window.deleteBet = function(id) {
     }
 };
 
-// ====== FONCTION DE FILTRE DU TABLEAU ======
+// ====== RECHERCHE ET FILTRE ======
 function filterBets() {
     const searchVal = document.getElementById("search-input").value.toLowerCase();
     const stratFilter = document.getElementById("filter-strategy").value;
     const statusFilter = document.getElementById("filter-status").value;
 
     let filtered = appState.bets.filter(bet => {
-        const matchesSearch = bet.league.toLowerCase().includes(searchVal) || 
-                              bet.home.toLowerCase().includes(searchVal) || 
-                              bet.away.toLowerCase().includes(searchVal);
+        const betText = (bet.teams || (bet.home + " " + bet.away)).toLowerCase();
+        const matchesSearch = bet.league.toLowerCase().includes(searchVal) || betText.includes(searchVal);
         const matchesStrat = stratFilter ? bet.strategy === stratFilter : true;
         const matchesStatus = statusFilter ? bet.outcome === statusFilter : true;
 
@@ -275,7 +312,7 @@ function filterBets() {
     renderBetsTable(filtered);
 }
 
-// ====== ANALYSE ET COMPARAISON DES STRATÉGIES ======
+// ====== STRATÉGIES ET INSIGHTS ======
 function updateStrategiesComparison() {
     const gridContainer = document.getElementById("strategies-container-grid");
     if (!gridContainer) return;
@@ -293,7 +330,6 @@ function updateStrategiesComparison() {
             bestStratName = strat;
         }
 
-        // On affiche uniquement les cartes des méthodes jouées pour éviter l'encombrement
         if (stratBets.length > 0) {
             const card = document.createElement("div");
             card.className = "strat-analysis-card";
@@ -315,7 +351,6 @@ function updateStrategiesComparison() {
     if (bestEl) bestEl.innerText = bestStratName;
 }
 
-// ====== ANALYSE AVANCÉE (MEILLEUR/PIRE CHAMPIONNAT) ======
 function updateAdvancedInsights() {
     if (appState.bets.length === 0) return;
 
@@ -341,7 +376,6 @@ function updateAdvancedInsights() {
     if (document.getElementById("best-league")) document.getElementById("best-league").innerText = bestLeague;
     if (document.getElementById("worst-league")) document.getElementById("worst-league").innerText = worstLeague;
     
-    // Calcul de la moyenne de paris par jour
     if (document.getElementById("avg-bets")) {
         const dates = [...new Set(appState.bets.map(b => b.datetime.split('T')[0]))];
         const avg = appState.bets.length / (dates.length || 1);
@@ -349,22 +383,85 @@ function updateAdvancedInsights() {
     }
 }
 
-// ====== CALENDRIER 30 JOURS ======
+// ====== CALENDRIER INTERACTIF ======
 function buildCalendar() {
     const grid = document.getElementById("calendar-grid");
     if (!grid) return;
     grid.innerHTML = "";
 
-    for (let i = 1; i <= 30; i++) {
+    const today = new Date();
+
+    for (let i = 29; i >= 0; i--) {
+        const currentDayDate = new Date();
+        currentDayDate.setDate(today.getDate() - i);
+        const dateStr = currentDayDate.toISOString().split('T')[0];
+        const displayDate = currentDayDate.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' });
+
+        const dayBets = appState.bets.filter(b => b.datetime.startsWith(dateStr));
+        
+        let dayProfit = 0;
+        let winCount = 0;
+
+        dayBets.forEach(b => {
+            if (b.outcome === "Gagné") {
+                dayProfit += (b.stake * b.odds) - b.stake;
+                winCount++;
+            } else {
+                dayProfit -= b.stake;
+            }
+        });
+
         const dayEl = document.createElement("div");
         dayEl.className = "calendar-day";
-        dayEl.style.borderLeft = "3px solid var(--border)";
-        dayEl.innerHTML = `<strong>J${i}</strong><br><small>0 F</small>`;
+        
+        if (dayBets.length > 0) {
+            if (dayProfit >= 0) {
+                dayEl.classList.add("day-win");
+            } else {
+                dayEl.classList.add("day-loss");
+            }
+        } else {
+            dayEl.style.borderLeft = "3px solid var(--border)";
+        }
+
+        dayEl.innerHTML = `
+            <strong>${displayDate}</strong><br>
+            <small style="font-weight:bold; color:${dayBets.length > 0 ? (dayProfit >= 0 ? 'var(--success)' : 'var(--danger)') : 'var(--text-muted)'}">
+                ${dayBets.length > 0 ? (dayProfit >= 0 ? '+' : '') + Math.round(dayProfit).toLocaleString() + ' F' : '0 F'}
+            </small><br>
+            <span style="font-size:0.7rem; color:var(--text-muted)">
+                ${dayBets.length > 0 ? `🟢 ${dayBets.length} coupon(s)` : 'Aucun pari'}
+            </span>
+        `;
+
+        dayEl.addEventListener("click", () => {
+            if (dayBets.length === 0) {
+                alert(`Journée du ${displayDate} :\nAucun pari enregistré.`);
+                return;
+            }
+
+            let detailMessage = `Résumé du ${displayDate} :\n`;
+            detailMessage += `-------------------------\n`;
+            detailMessage += `• Nombre de coupons joués : ${dayBets.length}\n`;
+            detailMessage += `• Coupons gagnés : ${winCount}\n`;
+            detailMessage += `• Coupons perdus : ${dayBets.length - winCount}\n`;
+            detailMessage += `• Bilan financier : ${dayProfit >= 0 ? '+' : ''}${Math.round(dayProfit).toLocaleString()} FCFA\n\n`;
+            detailMessage += `Détails des coupons :\n`;
+            
+            dayBets.forEach((b, idx) => {
+                const matchInfo = b.teams || (b.home + " vs " + b.away);
+                const typeStr = b.type ? `[${b.type}] ` : '';
+                detailMessage += `${idx + 1}. ${typeStr}${matchInfo} (${b.league}) | Option : ${b.strategy} -> ${b.outcome}\n`;
+            });
+
+            alert(detailMessage);
+        });
+
         grid.appendChild(dayEl);
     }
 }
 
-// ====== GRAPHIQUE CHART.JS ======
+// ====== GRAPH EVOLUTION BANQUE ======
 function initCharts() {
     const canvas = document.getElementById('capitalChart');
     if (!canvas) return;
@@ -374,7 +471,6 @@ function initCharts() {
     let dataPoints = [current];
     let labels = ["Départ"];
 
-    // Inverser la copie pour afficher l'évolution chronologique (du plus ancien au plus récent)
     const chronologicalBets = [...appState.bets].reverse();
 
     chronologicalBets.forEach((bet, index) => {
