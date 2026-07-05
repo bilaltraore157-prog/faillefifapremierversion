@@ -15,7 +15,7 @@ const AVAILABLE_STRATEGIES = [
 
 // Mapping des sélections exactes selon la méthode choisie (image_aef7e5.png)
 const EXACT_SELECTIONS = {
-    "Victoire": ["Victoire Domicile (V1)", "Victoire Extérieur (V2)", "Match Nul (X)"],
+    "Victoire": ["Victoire Domicile (V1)", "Victoire Extérieur (V2)", "double chance (1x)","double chance (x2)", "Match Nul (X)"],
     "Total Plus de": ["Total +1.5", "Total +2.5", "Total +3.5", "Total +4.5", "Total +5.5"],
     "Total Moins de": ["Total -1.5", "Total -2.5", "Total -3.5", "Total -4.5", "Total -5.5"],
     "Les 2 équipes marquent : Oui": ["Les 2 marquent : Oui"],
